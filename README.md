@@ -1,37 +1,103 @@
-# lunar [![License](https://img.shields.io/badge/license-MIT-4EB1BA.svg?style=flat-square)](https://github.com/6tail/lunar-typescript/blob/master/LICENSE)
+# Chinese Lunar Calendar Tool
 
-lunar是一款无第三方依赖的公历(阳历)、农历(阴历、老黄历)、佛历和道历工具，支持星座、儒略日、干支、生肖、节气、节日、彭祖百忌、每日宜忌、吉神宜趋、凶煞宜忌、吉神(喜神/福神/财神/阳贵神/阴贵神)方位、胎神方位、冲煞、纳音、星宿、八字、五行、十神、建除十二值星、青龙名堂等十二神、黄道日及吉凶等。
+一个基于 [`6tail/lunar-typescript`](https://github.com/6tail/lunar-typescript) 的英文农历日期查询页面，可作为纯静态网站部署到 Nginx、GitHub Pages 或其他静态文件服务器。
 
-[English](https://github.com/6tail/lunar-typescript/blob/master/README_EN.md)
+在线访问：[https://chinamaxxing.info/tools/index.html](https://chinamaxxing.info/tools/index.html)
 
-## 示例
+[English](./README_EN.md)
 
-    // install
-    npm init -y
-    npm i typescript -D
-    npm i ts-node -D
-    npm i lunar-typescript
-     
-    // test.ts
-    import {Solar} from 'lunar-typescript';
-    // import {Solar, Lunar, HolidayUtil} from 'lunar-typescript';
-     
-    const solar = Solar.fromYmd(1986, 5, 29);
-    console.log(solar.toFullString());
-    console.log(solar.getLunar().toFullString());
-     
-    // run
-    ts-node test.ts
+![Chinese Lunar Calendar 测试页面](./docs/images/calendar-test-page.png)
 
-输出结果：
+## 项目来源
 
-    1986-05-29 00:00:00 星期四 双子座
-    一九八六年四月廿一 丙寅(虎)年 癸巳(蛇)月 癸酉(鸡)日 子(鼠)时 纳音[炉中火 长流水 剑锋金 桑柘木] 星期四 北方玄武 星宿[斗木獬](吉) 彭祖百忌[癸不词讼理弱敌强 酉不会客醉坐颠狂] 喜神方位[巽](东南) 阳贵神方位[巽](东南) 阴贵神方位[震](正东) 福神方位[兑](正西) 财神方位[离](正南) 冲[(丁卯)兔] 煞[东]
+本项目从 [`6tail/lunar-typescript`](https://github.com/6tail/lunar-typescript) 克隆并进行二次开发。原项目由 6tail 开发并以 MIT License 发布。本仓库保留原项目的版权声明和 [`LICENSE`](./LICENSE)，感谢原作者提供完整的公历与中国农历转换能力。
 
-## 文档
+本项目不是原项目的官方发行版本。有关底层日期算法和完整 API，请访问[原项目文档](https://6tail.cn/calendar/api.html)。
 
-请移步至 [https://6tail.cn/calendar/api.html](https://6tail.cn/calendar/api.html "https://6tail.cn/calendar/api.html")
+## 本项目的修改
 
-## Star History
+- 新增可交互的英文测试页面 `test.html`。
+- 支持通过日期选择器查询公历、农历、生肖、星期、传统农历节日和节气。
+- 精简农历结果，不展示纳音、星宿、彭祖百忌、吉凶、神位方位和冲煞等信息。
+- 将页面界面和查询结果转换为英文，并补充传统节日英文名称。
+- 新增可直接运行的 Node.js 示例 `test.js`。
+- 新增仅用于本地预览的零依赖静态服务器 `server.js`。
+- 将浏览器版依赖整理为 `vendor/lunar-typescript.mjs`，生产部署无需上传 `node_modules` 或 `dist/lib`。
+- 新增 Nginx/静态网站部署方式和页面截图。
 
-[![Star History Chart](https://api.star-history.com/svg?repos=6tail/lunar-typescript&type=Date)](https://star-history.com/#6tail/lunar-typescript&Date)
+## 本地预览
+
+需要 Node.js 18 或更高版本：
+
+```bash
+node server.js
+```
+
+打开：
+
+```text
+http://127.0.0.1:8765/test.html
+```
+
+`server.js` 只用于本地预览。生产环境使用 Nginx 时不需要安装或运行 Node.js。
+
+## 命令行示例
+
+安装依赖后运行：
+
+```bash
+npm install
+node test.js
+```
+
+## Nginx 部署
+
+将以下静态文件和目录发布到网站目录：
+
+```text
+test.html
+vendor/lunar-typescript.mjs
+```
+
+Nginx 必须为 `.mjs` 返回 JavaScript MIME 类型：
+
+```nginx
+server {
+    listen 80;
+    server_name example.com;
+
+    root /var/www/lunar-calendar;
+    index test.html;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    location ~ \.mjs$ {
+        default_type application/javascript;
+    }
+}
+```
+
+检查并重新加载配置：
+
+```bash
+nginx -t
+sudo systemctl reload nginx
+```
+
+## 项目结构
+
+```text
+.
+├── docs/images/                 # README 截图
+├── src/                         # 上游 TypeScript 源码
+├── vendor/lunar-typescript.mjs  # 浏览器端单文件模块
+├── test.html                    # 英文日期查询页面
+├── test.js                      # Node.js 示例
+└── server.js                    # 本地静态服务器
+```
+
+## 许可证
+
+本项目沿用原项目的 [MIT License](./LICENSE)。分发或修改时请保留原版权及许可声明。

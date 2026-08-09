@@ -1,37 +1,103 @@
-# lunar [![License](https://img.shields.io/badge/license-MIT-4EB1BA.svg?style=flat-square)](https://github.com/6tail/lunar-typescript/blob/master/LICENSE)
+# Chinese Lunar Calendar Tool
 
-lunar is a calendar library for Solar and Chinese Lunar.
+An English-language Chinese lunar calendar lookup page based on [`6tail/lunar-typescript`](https://github.com/6tail/lunar-typescript). It can be deployed as a static site on Nginx, GitHub Pages, or any other static file server.
 
-[简体中文](https://github.com/6tail/lunar-typescript/blob/master/README.md)
+Live site: [https://chinamaxxing.info/tools/index.html](https://chinamaxxing.info/tools/index.html)
 
-## Example
+[简体中文](./README.md)
 
-    // install
-    npm init -y
-    npm i typescript -D
-    npm i ts-node -D
-    npm i lunar-typescript
-     
-    // test.ts
-    import {Solar} from 'lunar-typescript';
-    // import {Solar, Lunar, HolidayUtil} from 'lunar-typescript';
-     
-    const solar = Solar.fromYmd(1986, 5, 29);
-    console.log(solar.toFullString());
-    console.log(solar.getLunar().toFullString());
-     
-    // run
-    ts-node test.ts
+![Chinese Lunar Calendar test page](./docs/images/calendar-test-page.png)
 
-Output:
+## Upstream project
 
-    1986-05-29 00:00:00 星期四 双子座
-    一九八六年四月廿一 丙寅(虎)年 癸巳(蛇)月 癸酉(鸡)日 子(鼠)时 纳音[炉中火 长流水 剑锋金 桑柘木] 星期四 北方玄武 星宿[斗木獬](吉) 彭祖百忌[癸不词讼理弱敌强 酉不会客醉坐颠狂] 喜神方位[巽](东南) 阳贵神方位[巽](东南) 阴贵神方位[震](正东) 福神方位[兑](正西) 财神方位[离](正南) 冲[(丁卯)兔] 煞[东]
+This repository was cloned from and is a derivative of [`6tail/lunar-typescript`](https://github.com/6tail/lunar-typescript), created by 6tail and released under the MIT License. The original copyright notice and [`LICENSE`](./LICENSE) are retained.
 
-## Documentation
+This is not an official release of the upstream project. For the underlying calendar algorithms and full API, see the [upstream documentation](https://6tail.cn/calendar/api.html).
 
-Please visit [https://6tail.cn/calendar/api.html](https://6tail.cn/calendar/api.html "https://6tail.cn/calendar/api.html")
+## Changes in this project
 
-## Star History
+- Added an interactive English test page in `test.html`.
+- Added date selection and output for Gregorian date, lunar date, zodiac, weekday, traditional lunar festivals, and solar terms.
+- Removed Na Yin, lunar mansions, fortune information, taboos, deity directions, clashes, and other divination-related details from the displayed result.
+- Translated the UI and displayed calendar information into English, including additional traditional festival names.
+- Added a directly runnable Node.js example in `test.js`.
+- Added a dependency-free local preview server in `server.js`.
+- Added the standalone browser bundle at `vendor/lunar-typescript.mjs`; production deployment does not require `node_modules` or `dist/lib`.
+- Added Nginx/static hosting instructions and a test-page screenshot.
 
-[![Star History Chart](https://api.star-history.com/svg?repos=6tail/lunar-typescript&type=Date)](https://star-history.com/#6tail/lunar-typescript&Date)
+## Local preview
+
+Node.js 18 or later is recommended:
+
+```bash
+node server.js
+```
+
+Open:
+
+```text
+http://127.0.0.1:8765/test.html
+```
+
+`server.js` is only needed for local preview. Node.js is not required when the production site is served by Nginx.
+
+## Command-line example
+
+After installing dependencies, run:
+
+```bash
+npm install
+node test.js
+```
+
+## Nginx deployment
+
+Publish these static assets to the web root:
+
+```text
+test.html
+vendor/lunar-typescript.mjs
+```
+
+Nginx must return a JavaScript MIME type for `.mjs` files:
+
+```nginx
+server {
+    listen 80;
+    server_name example.com;
+
+    root /var/www/lunar-calendar;
+    index test.html;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    location ~ \.mjs$ {
+        default_type application/javascript;
+    }
+}
+```
+
+Validate and reload the configuration:
+
+```bash
+nginx -t
+sudo systemctl reload nginx
+```
+
+## Project structure
+
+```text
+.
+├── docs/images/                 # README screenshots
+├── src/                         # Upstream TypeScript source
+├── vendor/lunar-typescript.mjs  # Standalone browser module
+├── test.html                    # English date lookup page
+├── test.js                      # Node.js example
+└── server.js                    # Local static server
+```
+
+## License
+
+This project remains available under the upstream [MIT License](./LICENSE). Preserve the original copyright and permission notice when redistributing or modifying the software.

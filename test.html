@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chinese Lunar Calendar Test</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+      color: #2d2926;
+      background: #f5efe4;
+    }
+    * { box-sizing: border-box; }
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background:
+        radial-gradient(circle at 15% 15%, rgba(188, 60, 48, .12), transparent 30%),
+        radial-gradient(circle at 85% 80%, rgba(180, 133, 54, .16), transparent 32%),
+        #f5efe4;
+    }
+    main {
+      width: min(760px, 100%);
+      padding: clamp(24px, 5vw, 48px);
+      border: 1px solid rgba(110, 83, 53, .18);
+      border-radius: 20px;
+      background: rgba(255, 253, 248, .94);
+      box-shadow: 0 20px 60px rgba(74, 53, 30, .12);
+    }
+    header { margin-bottom: 30px; }
+    h1 { margin: 0 0 8px; font-family: Georgia, "Songti SC", serif; font-size: clamp(28px, 5vw, 42px); }
+    header p { margin: 0; color: #766d65; }
+    .picker { display: flex; gap: 12px; align-items: end; margin-bottom: 28px; }
+    label { flex: 1; font-size: 14px; font-weight: 700; color: #62564c; }
+    input, button {
+      min-height: 46px;
+      margin-top: 8px;
+      border-radius: 10px;
+      font: inherit;
+    }
+    input { width: 100%; padding: 0 14px; border: 1px solid #cfc2b4; background: white; }
+    input:focus { outline: 3px solid rgba(174, 57, 45, .15); border-color: #ae392d; }
+    button { padding: 0 20px; border: 0; color: white; background: #a33b31; cursor: pointer; font-weight: 700; }
+    button:hover { background: #842f27; }
+    .summary { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 14px; }
+    .card, .detail { padding: 18px; border-radius: 12px; background: #f8f3ea; border: 1px solid #eadfce; }
+    .label { margin-bottom: 8px; color: #8b7868; font-size: 13px; letter-spacing: .08em; }
+    .value { font-size: 18px; font-weight: 700; line-height: 1.6; }
+    .jieqi { color: #a33b31; }
+    .detail .value { font-size: 15px; font-weight: 500; overflow-wrap: anywhere; }
+    .error { color: #a01818; }
+    @media (max-width: 560px) {
+      .picker { align-items: stretch; flex-direction: column; }
+      .summary { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Chinese Lunar Calendar</h1>
+      <p>Select a date to view its Gregorian, lunar, and solar-term information.</p>
+    </header>
+
+    <section class="picker">
+      <label for="date">Select a date
+        <input id="date" type="date" value="2026-08-07">
+      </label>
+      <button id="query" type="button">View date</button>
+    </section>
+
+    <section aria-live="polite">
+      <div class="summary">
+        <article class="card">
+          <div class="label">GREGORIAN DATE</div>
+          <div class="value" id="solar">—</div>
+        </article>
+        <article class="card">
+          <div class="label">SOLAR TERM</div>
+          <div class="value jieqi" id="jieqi">—</div>
+        </article>
+      </div>
+      <article class="detail">
+        <div class="label">LUNAR DATE DETAILS</div>
+        <div class="value" id="lunar">—</div>
+      </article>
+      <p class="error" id="error" role="alert"></p>
+    </section>
+  </main>
+
+  <script type="module">
+    import { I18n, Solar } from './vendor/lunar-typescript.mjs';
+
+    I18n.setLanguage('en');
+
+    const dateInput = document.querySelector('#date');
+    const solarOutput = document.querySelector('#solar');
+    const lunarOutput = document.querySelector('#lunar');
+    const jieQiOutput = document.querySelector('#jieqi');
+    const errorOutput = document.querySelector('#error');
+
+    const festivalTranslations = {
+      'Luna New Year': 'Lunar New Year',
+      '接神日': 'Welcoming the Gods Day', '隔开日': 'Separation Day',
+      '人日': "People's Day", '谷日': 'Grain Day', '顺星节': 'Shunxing Festival',
+      '天日': 'Heaven Day', '地日': 'Earth Day', '天穿节': 'Sky-Patching Festival',
+      '填仓节': 'Filling the Granary Festival', '正月晦': 'Last Day of the First Lunar Month',
+      '中和节': 'Zhonghe Festival', '社日节': 'She Festival', '上巳节': 'Shangsi Festival',
+      '分龙节': 'Dragon Separation Festival', '会龙节': 'Dragon Gathering Festival',
+      '天贶节': 'Tiankuang Festival', '观莲节': 'Lotus Viewing Festival',
+      '五谷母节': 'Mother of Grains Festival', '中元节': 'Ghost Festival',
+      '财神节': 'God of Wealth Festival', '地藏节': 'Ksitigarbha Festival',
+      '天灸日': 'Heavenly Moxibustion Day', '寒衣节': 'Winter Clothing Festival',
+      '十成节': 'Shicheng Festival', '下元节': 'Xiayuan Festival',
+      '驱傩日': 'Nuo Exorcism Day', '尾牙': 'Weiya Festival', '祭灶日': 'Kitchen God Festival',
+    };
+
+    function ordinal(number) {
+      const remainder = number % 100;
+      if (remainder >= 11 && remainder <= 13) return `${number}th`;
+      return `${number}${{ 1: 'st', 2: 'nd', 3: 'rd' }[number % 10] || 'th'}`;
+    }
+
+    function formatLunarSummary(lunar) {
+      const festivals = [...lunar.getFestivals(), ...lunar.getOtherFestivals()]
+        .map((name) => festivalTranslations[name] || name);
+      const lunarMonth = lunar.getMonth();
+      const ganzhiYear = lunar.getYearInGanZhi().replace(/([a-z])([A-Z])/g, '$1-$2');
+      const parts = [
+        `${Math.abs(lunarMonth) === lunarMonth ? '' : 'Leap '}${ordinal(Math.abs(lunarMonth))} Lunar Month, ${ordinal(lunar.getDay())} Day`,
+        `${ganzhiYear} (${lunar.getYearShengXiao()}) Year`,
+        lunar.getWeekInChinese(),
+      ];
+
+      if (festivals.length) {
+        parts.push(`Traditional Festival: ${[...new Set(festivals)].join(', ')}`);
+      }
+      if (lunar.getJieQi()) {
+        parts.push(`Solar Term: ${lunar.getJieQi()}`);
+      }
+
+      return parts.join(' · ');
+    }
+
+    function showDate() {
+      errorOutput.textContent = '';
+      if (!dateInput.value) {
+        errorOutput.textContent = 'Please select a date first.';
+        return;
+      }
+
+      try {
+        const [year, month, day] = dateInput.value.split('-').map(Number);
+        const solar = Solar.fromYmd(year, month, day);
+        const lunar = solar.getLunar();
+
+        solarOutput.textContent = `${solar.toYmd()} · ${lunar.getWeekInChinese()}`;
+        lunarOutput.textContent = formatLunarSummary(lunar);
+        jieQiOutput.textContent = lunar.getJieQi() || 'No solar term on this date';
+      } catch (error) {
+        errorOutput.textContent = `Date conversion failed: ${error.message}`;
+      }
+    }
+
+    document.querySelector('#query').addEventListener('click', showDate);
+    dateInput.addEventListener('change', showDate);
+    showDate();
+  </script>
+  <script nomodule>
+    document.querySelector('#error').textContent = 'This browser does not support JavaScript modules. Please use a modern browser.';
+  </script>
+</body>
+</html>
