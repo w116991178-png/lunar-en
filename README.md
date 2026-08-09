@@ -4,7 +4,7 @@ English | [简体中文](./README.zh-CN.md)
 
 An English-language Chinese lunar calendar lookup page based on [`6tail/lunar-typescript`](https://github.com/6tail/lunar-typescript). It can be deployed as a static site on Nginx, GitHub Pages, or any other static file server.
 
-Live site: [https://chinamaxxing.info/tools/index.html](https://chinamaxxing.info/tools/index.html)
+Live site: [https://chinamaxxing.info/tools/lunar-calendar.html](https://chinamaxxing.info/tools/lunar-calendar.html)
 
 ![Chinese Lunar Calendar test page](./docs/images/calendar-test-page.png)
 

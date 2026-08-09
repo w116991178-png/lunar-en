@@ -4,7 +4,7 @@
 
 一个基于 [`6tail/lunar-typescript`](https://github.com/6tail/lunar-typescript) 的英文农历日期查询页面，可作为纯静态网站部署到 Nginx、GitHub Pages 或其他静态文件服务器。
 
-在线访问：[https://chinamaxxing.info/tools/index.html](https://chinamaxxing.info/tools/index.html)
+在线访问：[https://chinamaxxing.info/tools/lunar-calendar.html](https://chinamaxxing.info/tools/lunar-calendar.html)
 
 ![Chinese Lunar Calendar 测试页面](./docs/images/calendar-test-page.png)
 
