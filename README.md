@@ -1,3 +1,5 @@
+English | [简体中文](./README.zh-CN.md)
+
 # Chinese Lunar Calendar Tool
 
 An English-language Chinese lunar calendar lookup page based on [`6tail/lunar-typescript`](https://github.com/6tail/lunar-typescript). It can be deployed as a static site on Nginx, GitHub Pages, or any other static file server.

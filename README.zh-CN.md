@@ -1,3 +1,5 @@
+[English](./README.md) | 简体中文
+
 # Chinese Lunar Calendar Tool
 
 一个基于 [`6tail/lunar-typescript`](https://github.com/6tail/lunar-typescript) 的英文农历日期查询页面，可作为纯静态网站部署到 Nginx、GitHub Pages 或其他静态文件服务器。
