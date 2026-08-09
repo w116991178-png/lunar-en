@@ -4,8 +4,6 @@ An English-language Chinese lunar calendar lookup page based on [`6tail/lunar-ty
 
 Live site: [https://chinamaxxing.info/tools/index.html](https://chinamaxxing.info/tools/index.html)
 
-[简体中文](./README_CN.md)
-
 ![Chinese Lunar Calendar test page](./docs/images/calendar-test-page.png)
 
 ## Upstream project

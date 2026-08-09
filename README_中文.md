@@ -4,8 +4,6 @@
 
 在线访问：[https://chinamaxxing.info/tools/index.html](https://chinamaxxing.info/tools/index.html)
 
-[English](./README.md)
-
 ![Chinese Lunar Calendar 测试页面](./docs/images/calendar-test-page.png)
 
 ## 项目来源
