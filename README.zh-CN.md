@@ -24,6 +24,7 @@
 - 新增仅用于本地预览的零依赖静态服务器 `server.js`。
 - 将浏览器版依赖整理为 `vendor/lunar-typescript.mjs`，生产部署无需上传 `node_modules` 或 `dist/lib`。
 - 新增 Nginx/静态网站部署方式和页面截图。
+- 新增「按农历查询个人生肖」功能（根据公历出生日期推算所属生肖），可在测试页面体验：[https://73hi.com/ai.html](https://73hi.com/ai.html)。
 
 ## 本地预览
 

@@ -24,6 +24,7 @@ This is not an official release of the upstream project. For the underlying cale
 - Added a dependency-free local preview server in `server.js`.
 - Added the standalone browser bundle at `vendor/lunar-typescript.mjs`; production deployment does not require `node_modules` or `dist/lib`.
 - Added Nginx/static hosting instructions and a test-page screenshot.
+- Added a Chinese zodiac lookup by lunar year (find your zodiac sign from a Gregorian birth date) on the testable page: [https://73hi.com/ai.html](https://73hi.com/ai.html).
 
 ## Local preview
 
